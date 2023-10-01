@@ -1,9 +1,0 @@
-Metadata-Version: 2.1
-Name: starmap
-Version: 2023.10.1
-Summary: Awesome svg starmaps
-Author-email: Skeletor <skeletor.skeletor@gmail.com>
-License: License :: OSI Approved :: MIT License
-Project-URL: Repository, https://github.com/skeletor-git/starmap-svg
-Classifier: Programming Language :: Python :: 3
-Requires-Python: >=3.8
