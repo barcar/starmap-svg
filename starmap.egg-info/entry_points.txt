@@ -1,0 +1,2 @@
+[console_scripts]
+starmap = starmap:main

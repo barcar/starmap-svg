@@ -1,0 +1,28 @@
+[project]
+name = "starmap"
+authors = [
+    {name = "Skeletor", email = "skeletor.skeletor@gmail.com"},
+]
+description = "Awesome svg starmaps"
+requires-python = ">=3.8"
+license = {text = "License :: OSI Approved :: MIT License"}
+classifiers = [
+    "Programming Language :: Python :: 3"
+]
+dependencies = [
+    "svgwrite"
+]
+version = "2023.10.01"
+
+[project.urls]
+Repository = "https://github.com/skeletor-git/starmap-svg"
+
+[project.scripts]
+starmap = "starmap:main"
+
+[build-system]
+requires = ["setuptools", "pbr"]
+build-backend = "setuptools.build_meta"
+
+[tool.distutils.bdist_wheel]
+universal = true
