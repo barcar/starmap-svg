@@ -55,9 +55,9 @@ half_y = mm_to_px(height/2)
 
 #Stars declination and hour data file "Yale Bright Star Catalog 5"
 
-file1 = files('starmap.data').joinpath('ybsc5.txt').read_text()
-file2 = files('starmap.data').joinpath('extradata.txt').read_text() #extra star data for magnitude 6,5 and higher
-file3 = files('starmap.data').joinpath('constellation_lines.txt').read_text()
+file1 = files('starmap.data').joinpath('ybsc5.txt')
+file2 = files('starmap.data').joinpath('extradata.txt') #extra star data for magnitude 6,5 and higher
+file3 = files('starmap.data').joinpath('constellation_lines.txt')
 
 data = []
 constellation_lines = []
@@ -108,11 +108,6 @@ def read_constellation_file():
 			tmp[4] = float(tmp[4])
 			constellation_lines.append(tmp)
 
-
-
-
-
-
 ############ ARGPARSER ###################################################
 
 parser = argparse.ArgumentParser(description='Generate starmap svg file')
@@ -129,7 +124,6 @@ parser.add_argument('-o','--output', help='output filename.svg',default='starmap
 parser.add_argument('-width','--width',nargs='?', help='width in mm',type=int, default=width)
 parser.add_argument('-height','--height',nargs='?', help='height in mm',type=int, default=height)
 parser.add_argument('-info','--info', help='Info text example eame of the place', default=info )
-
 
 args = parser.parse_args()
 
