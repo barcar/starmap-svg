@@ -1,8 +1,9 @@
 
 import svgwrite
-import random 
+import random
 import math
 import argparse
+from importlib.resources import files
 
 ############ DEFAULT VALUES AND CONSTS ####################################
 
@@ -17,7 +18,7 @@ constellation_color = "rgb(255,255,255)"
 output_file = 'starmap.svg'
 
 #Date & Time
-date = '01.01.2000' 
+date = '01.01.2000'
 time = '12.00.00'
 utc = 2
 summertime = False
@@ -45,7 +46,7 @@ def mm_to_px(mm):
 
 #Smaller the star bigger the magnitude
 magnitude_limit = 6.5
-aperture = 0.4 
+aperture = 0.4
 
 half_x = mm_to_px(width/2)
 half_y = mm_to_px(height/2)
@@ -53,15 +54,16 @@ half_y = mm_to_px(height/2)
 ############ STARDATAFILE ################################################
 
 #Stars declination and hour data file "Yale Bright Star Catalog 5"
-file1 = "datafiles/ybsc5.txt"
-file2 = "datafiles/extradata.txt" #extra star data for magnitude 6,5 and higher
-file3 = "datafiles/constellation_lines.txt"
+
+file1 = files('starmap.data').joinpath('ybsc5.txt').read_text()
+file2 = files('starmap.data').joinpath('extradata.txt').read_text() #extra star data for magnitude 6,5 and higher
+file3 = files('starmap.data').joinpath('constellation_lines.txt').read_text()
 
 data = []
 constellation_lines = []
 
 def hours_to_decimal(ra):##use this for ybsc5
-	
+
 	seconds  = float(ra[0:2])*60*60 	#hour
 	seconds += float(ra[3:5])*60	#minute
 	seconds += float(ra[5:7])		#seconds
@@ -83,13 +85,13 @@ def read_ybsc5():
 				constellation = line[11:14]
 				greek = line[7:10]
 				data.append([ra,dec,mag,constellation,greek])
-				
+
 
 def read_extra_star_coordinate_file():
 	global data
 	with open(file2, 'rt') as f:
 		for line in f:
-			if (',' in line): 
+			if (',' in line):
 				tmp = ([ n for n in line.strip().split(',')])
 				if float(tmp[2]) > 6.5:
 					tmp[0] = hours_to_decimal(tmp[0])
@@ -169,7 +171,7 @@ def draw_star(x,y,mag,color):
 		path.append(polar_to_cartesian(mag,angle*point,x,y))
 		#point between two star points
 		path.append(polar_to_cartesian(mag/2,angle*(point+1),x,y))
-	
+
 	#add object to svg
 	stars = image.add(image.polygon(path,id ='star',stroke="none",fill=color))
 
@@ -206,18 +208,18 @@ def date_and_time_to_rad(date,time):
 	#years to days
 	daycounter = (year-epochyear)*days_in_year
 	#month to days
-	daycounter  += sum(months[0:month-1])	
+	daycounter  += sum(months[0:month-1])
 	#days
-	daycounter += day-1				
+	daycounter += day-1
 
 	secondcounter  = (hour- epochhour+ calculation_mistake)*60*60
 	secondcounter  += minute*60
-	secondcounter += second			
-	
+	secondcounter += second
+
 	#Summertime
 	if(summertime):
 		secondcounter -= (60*60)
-	
+
 	#UTC
 	secondcounter -= (60*60*utc)
 
@@ -241,7 +243,7 @@ def polar_to_cartesian(radius,angle,centerx,centery):
 def angle_between(north,east,dec_angle,ra_angle):
 	delta_ra = ra_angle - east
 	rad = math.acos(math.cos(delta_ra)*math.cos(north)*math.cos(dec_angle) + math.sin(north)*math.sin(dec_angle))
-	return rad 
+	return rad
 
 def right_ascension_to_rad(ra):
 	return math.radians(float(ra))
@@ -271,10 +273,10 @@ def generate_starmap(northern_N,eastern_E,date,time):
 	E = math.radians(eastern_E)
 
 	raddatetime = date_and_time_to_rad(date,time)
-	
+
 	if(guides is True):
 		draw_guides = []
-		
+
 		for degrees in range(-3,3):
 			for lines in range(0,360):
 				draw_guides.append([degrees*30,lines])
@@ -338,7 +340,7 @@ def generate_constellations(northern_N,eastern_E,date,time):
 	E = math.radians(eastern_E)
 
 	raddatetime = date_and_time_to_rad(date,time)
-	
+
 	for line in constellation_lines:
 		ascension0 = right_ascension_to_rad(line[1])+raddatetime
 		declination0 = declination_to_rad(line[2])
@@ -363,7 +365,7 @@ def main():
 	read_constellation_file()
 
 	#Svgfile
-	global image 
+	global image
 	image = svgwrite.Drawing(output_file,size=(str(width)+'mm',str(height)+'mm'))
 
 	#Background
